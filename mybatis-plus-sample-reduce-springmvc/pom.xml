@@ -4,16 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>mybatis-plus-samples</artifactId>
-        <groupId>com.baomidou.mybaitsplus</groupId>
+        <groupId>com.baomidou</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-plus-sample-reduce-springmvc</artifactId>
-
-    <properties>
-        <javassist.version>3.22.0-GA</javassist.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -36,11 +32,6 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
         <!--<dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc</artifactId>
@@ -56,14 +47,14 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>${javassist.version}</version>
+            <version>3.22.0-GA</version>
         </dependency>
-
     </dependencies>
-
-
 </project>

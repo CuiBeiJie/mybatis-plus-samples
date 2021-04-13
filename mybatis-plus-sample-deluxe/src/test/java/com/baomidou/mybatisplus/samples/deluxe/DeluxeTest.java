@@ -1,31 +1,26 @@
 package com.baomidou.mybatisplus.samples.deluxe;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.CollectionUtils;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.samples.deluxe.entity.User;
 import com.baomidou.mybatisplus.samples.deluxe.mapper.UserMapper;
 import com.baomidou.mybatisplus.samples.deluxe.model.UserPage;
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.CollectionUtils;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author miemie
  * @since 2018-08-13
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest
-public class DeluxeTest {
+class DeluxeTest {
 
     @Resource
     private UserMapper mapper;
@@ -41,7 +36,6 @@ public class DeluxeTest {
         System.out.println("当前每页显示数 ------> " + userPage.getSize());
         print(userPage.getRecords());
 
-
         System.out.println("------ baseMapper 自带分页 ------");
         Page<User> page = new Page<>(1, 5);
         IPage<User> userIPage = mapper.selectPage(page, new QueryWrapper<User>().eq("age", 20));
@@ -53,23 +47,23 @@ public class DeluxeTest {
     }
 
     @Test
-    public void testDelAll() {
+    void testDelAll() {
         mapper.deleteAll();
     }
 
     @Test
-    public void testInsert() {
+    void testInsert() {
         User u = new User().setEmail("122@qq.com").setVersion(1).setDeleted(0);
         mapper.insert(u);
 
         u.setAge(18);
         mapper.updateById(u);
         u = mapper.selectById(u.getId());
-        Assert.assertEquals("version should be updated",2, u.getVersion().intValue());
+        Assert.assertEquals("version should be updated", 2, u.getVersion().intValue());
     }
 
     @Test
-    public void testSelect() {
+    void testSelect() {
         System.out.println(mapper.selectById(1L));
     }
 
@@ -81,8 +75,8 @@ public class DeluxeTest {
 
 
     @Test
-    public void myInsertAll(){
-        long id =1008888L;
+    void myInsertAll() {
+        long id = 1008888L;
         User u = new User().setEmail("122@qq.com").setVersion(1).setDeleted(0).setId(id);
         mapper.myInsertAll(u);
 
@@ -92,7 +86,7 @@ public class DeluxeTest {
     }
 
     @Test
-    public void myInsertBatch(){
+    void myInsertBatch() {
         long id = 1009991;
         List<User> batchList = new ArrayList<>(2);
         batchList.add(new User().setId(id++).setEmail("111@qq.com").setVersion(1).setDeleted(0));
@@ -102,5 +96,18 @@ public class DeluxeTest {
         User user = mapper.selectById(1009991);
         Assert.assertNotNull(user);
         Assert.assertNotNull(user.getCreateTime());
+    }
+
+    @Test
+    void verifyGithub1532() {
+        mapper.findList(new User().setName("a")).forEach(System.out::println);
+    }
+
+    @Test
+    void testCustomSqlSegment() {
+        QueryWrapper<User> ew = new QueryWrapper<>();
+        ew.like("u.name", "Tom");
+        List<User> list = mapper.customerSqlSegment(ew);
+        Assert.assertEquals(1, list.size());
     }
 }

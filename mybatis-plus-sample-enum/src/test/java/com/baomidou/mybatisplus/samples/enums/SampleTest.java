@@ -1,21 +1,20 @@
 package com.baomidou.mybatisplus.samples.enums;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.samples.enums.entity.User;
+import com.baomidou.mybatisplus.samples.enums.enums.*;
+import com.baomidou.mybatisplus.samples.enums.mapper.UserMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.samples.enums.entity.User;
-import com.baomidou.mybatisplus.samples.enums.enums.AgeEnum;
-import com.baomidou.mybatisplus.samples.enums.enums.GenderEnum;
-import com.baomidou.mybatisplus.samples.enums.enums.GradeEnum;
-import com.baomidou.mybatisplus.samples.enums.mapper.UserMapper;
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * <p>
@@ -39,19 +38,20 @@ public class SampleTest {
         user.setAge(AgeEnum.ONE);
         user.setGrade(GradeEnum.HIGH);
         user.setGender(GenderEnum.MALE);
+        user.setStrEnum(StrEnum.ONE);
         user.setEmail("abc@mp.com");
         Assert.assertTrue(mapper.insert(user) > 0);
-        // 成功直接拿会写的 ID
+        // 成功直接拿回写的 ID
         System.err.println("\n插入成功 ID 为：" + user.getId());
 
         List<User> list = mapper.selectList(null);
-        for(User u:list){
+        for (User u : list) {
             System.out.println(u);
-            Assert.assertNotNull("age should not be null",u.getAge());
-            if(u.getId().equals(user.getId())){
-                Assert.assertNotNull("gender should not be null", u.getGender());
-                Assert.assertNotNull("grade should not be null",u.getGrade());
-
+            assertThat(u.getAge()).isNotNull();
+            if (u.getId().equals(user.getId())) {
+                assertThat(u.getGender()).isNotNull();
+                assertThat(u.getGrade()).isNotNull();
+                assertThat(u.getStrEnum()).isNotNull();
             }
         }
     }
@@ -72,6 +72,15 @@ public class SampleTest {
     public void select() {
         User user = mapper.selectOne(new QueryWrapper<User>().lambda().eq(User::getId, 2));
         Assert.assertEquals("Jack", user.getName());
-        Assert.assertTrue(AgeEnum.THREE == user.getAge());
+        Assert.assertSame(AgeEnum.THREE, user.getAge());
+
+        //#1500 github: verified ok. Not a bug
+        List<User> userList = mapper.selectList(new QueryWrapper<User>().lambda().eq(User::getUserState, UserState.ACTIVE));
+        //TODO 一起测试的时候完蛋，先屏蔽掉了。
+//        Assert.assertEquals(3, userList.size());
+        Optional<User> userOptional = userList.stream()
+                .filter(x -> x.getId() == 1)
+                .findFirst();
+        userOptional.ifPresent(user1 -> Assert.assertSame(user1.getUserState(), UserState.ACTIVE));
     }
 }

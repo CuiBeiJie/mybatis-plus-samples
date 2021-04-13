@@ -1,11 +1,27 @@
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS common;
+DROP TABLE IF EXISTS null1;
+DROP TABLE IF EXISTS null2;
 
-CREATE TABLE user
+CREATE TABLE common
 (
-	id BIGINT(20) NOT NULL COMMENT '主键ID',
-	name VARCHAR(30) NULL DEFAULT NULL COMMENT '姓名',
-	age INT(11) NULL DEFAULT NULL COMMENT '年龄',
-	email VARCHAR(50) NULL DEFAULT NULL COMMENT '邮箱',
-	is_delete INT(11) NOT NULL DEFAULT 0 COMMENT '是否删除',
-	PRIMARY KEY (id)
+    id      BIGINT(20) NOT NULL,
+    name    VARCHAR(20) NOT NULL,
+    deleted INT(11) NOT NULL DEFAULT 0,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE null1
+(
+    id      BIGINT(20) NOT NULL,
+    name    VARCHAR(20) NOT NULL,
+    deleted INT(11),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE null2
+(
+    id       BIGINT(20) NOT NULL,
+    name     VARCHAR(20) NOT NULL,
+    del_time TIMESTAMP,
+    PRIMARY KEY (id)
 );
